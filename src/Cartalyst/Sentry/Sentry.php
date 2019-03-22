@@ -630,6 +630,19 @@ class Sentry {
 		return $this->userProvider->findByResetPasswordCode($code);
 	}
 
+        /**
+	 * Finds a user by the given token api code.
+	 *
+	 * @param  string  $token_api
+	 * @return \Cartalyst\Sentry\Users\UserInterface
+	 * @throws \RuntimeException
+	 * @throws \Cartalyst\Sentry\Users\UserNotFoundException
+	 */
+	public function findUserByTokenApiCode($token_api)
+	{
+		return $this->userProvider->findByTokenApiCode($token_api);
+	}
+
 	/**
 	 * Returns an all users.
 	 *
@@ -739,5 +752,33 @@ class Sentry {
 		throw new \BadMethodCallException("Method [$method] is not supported by Sentry or no User has been set on Sentry to access shortcut method.");
 	}
 
+
+        /**
+         * Customize function
+         * Get user info by user account login
+         * @param array $credentials user account
+         * @return object user
+         * @date 12/07/2018
+         * @add S1TT
+         */
+        public function findByCredentials(array $credentials, $is_set_token = true, $length = 55) {
+            $user = $this->userProvider->findByCredentials($credentials);
+
+            if ($is_set_token) {
+                $this->user = $user;
+                $this->user->token_api = $this->user->getRandomString($length);
+                $this->user->token_expired = strtotime(date('Y-m-d H:i:s', strtotime('+4 hour')));
+                $this->user->save();
+            }
+            return $user;
+        }
+
+        public function removeTokenByUser($user) {
+            $this->user = $user;
+            $this->user->token_api = NULL;
+            $this->user->token_expired = NULL;
+            $this->user->save();
+            return $this->user;
+        }
 }
 

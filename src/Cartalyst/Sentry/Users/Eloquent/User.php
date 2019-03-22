@@ -913,7 +913,7 @@ class User extends Model implements UserInterface {
 	 *
 	 * @return string
 	 */
-	public function getRandomString($length = 42)
+	public function getRandomString($length = 55)
 	{
 		// We'll check if the user has OpenSSL installed with PHP. If they do
 		// we'll use a better method of getting a random string. Otherwise, we'll

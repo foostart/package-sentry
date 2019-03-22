@@ -232,6 +232,33 @@ class Provider implements ProviderInterface {
 		return $user;
 	}
 
+        /**
+	 * Finds a user by the given token api code.
+	 *
+	 * @param  string  $token_api
+	 * @return \Cartalyst\Sentry\Users\UserInterface
+	 * @throws RuntimeException
+	 * @throws \Cartalyst\Sentry\Users\UserNotFoundException
+	 */
+	public function findByTokenApiCode($token_api)
+	{
+		$model = $this->createModel();
+
+		$result = $model->newQuery()->where('token_api', '=', $token_api)->get();
+
+		if (($count = $result->count()) > 1)
+		{
+			throw new \RuntimeException("Found [$count] users with the same token api.");
+		}
+
+		if ( ! $user = $result->first())
+		{
+			throw new UserNotFoundException("A user was not found with the given token api.");
+		}
+
+		return $user;
+	}
+
 	/**
 	 * Returns an array containing all users.
 	 *
