@@ -29,6 +29,7 @@ use Cartalyst\Sentry\Sessions\IlluminateSession;
 use Cartalyst\Sentry\Throttling\Eloquent\Provider as ThrottleProvider;
 use Cartalyst\Sentry\Users\Eloquent\Provider as UserProvider;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Arr;
 
 class SentryServiceProvider extends ServiceProvider {
 
@@ -110,7 +111,8 @@ class SentryServiceProvider extends ServiceProvider {
 		{
 			$config = $app['config']->get('cartalyst.sentry');
 
-			$model = array_get($config, 'users.model');
+			//$model = Arr::get($config, 'users.model');
+                        $model = Arr::get($config, 'users.model');
 
 			// We will never be accessing a user in Sentry without accessing
 			// the user provider first. So, we can lazily set up our user
@@ -119,7 +121,8 @@ class SentryServiceProvider extends ServiceProvider {
 			// overriding at runtime.
 			if (method_exists($model, 'setLoginAttributeName'))
 			{
-				$loginAttribute = array_get($config, 'users.login_attribute');
+				//$loginAttribute = Arr::get($config, 'users.login_attribute');
+                                $loginAttribute = Arr::get($config, 'users.login_attribute');
 
 				forward_static_call_array(
 					array($model, 'setLoginAttributeName'),
@@ -130,7 +133,8 @@ class SentryServiceProvider extends ServiceProvider {
 			// Define the Group model to use for relationships.
 			if (method_exists($model, 'setGroupModel'))
 			{
-				$groupModel = array_get($config, 'groups.model');
+//				$groupModel = Arr::get($config, 'groups.model');
+				$groupModel = Arr::get($config, 'groups.model');
 
 				forward_static_call_array(
 					array($model, 'setGroupModel'),
@@ -141,7 +145,8 @@ class SentryServiceProvider extends ServiceProvider {
 			// Define the user group pivot table name to use for relationships.
 			if (method_exists($model, 'setUserGroupsPivot'))
 			{
-				$pivotTable = array_get($config, 'user_groups_pivot_table');
+//				$pivotTable = Arr::get($config, 'user_groups_pivot_table');
+				$pivotTable = Arr::get($config, 'user_groups_pivot_table');
 
 				forward_static_call_array(
 					array($model, 'setUserGroupsPivot'),
@@ -164,12 +169,12 @@ class SentryServiceProvider extends ServiceProvider {
 		{
 			$config = $app['config']->get('cartalyst.sentry');
 
-			$model = array_get($config, 'groups.model');
+			$model = Arr::get($config, 'groups.model');
 
 			// Define the User model to use for relationships.
 			if (method_exists($model, 'setUserModel'))
 			{
-				$userModel = array_get($config, 'users.model');
+				$userModel = Arr::get($config, 'users.model');
 
 				forward_static_call_array(
 					array($model, 'setUserModel'),
@@ -180,7 +185,7 @@ class SentryServiceProvider extends ServiceProvider {
 			// Define the user group pivot table name to use for relationships.
 			if (method_exists($model, 'setUserGroupsPivot'))
 			{
-				$pivotTable = array_get($config, 'user_groups_pivot_table');
+				$pivotTable = Arr::get($config, 'user_groups_pivot_table');
 
 				forward_static_call_array(
 					array($model, 'setUserGroupsPivot'),
@@ -203,18 +208,18 @@ class SentryServiceProvider extends ServiceProvider {
 		{
 			$config = $app['config']->get('cartalyst.sentry');
 
-			$model = array_get($config, 'throttling.model');
+			$model = Arr::get($config, 'throttling.model');
 
 			$throttleProvider = new ThrottleProvider($app['sentry.user'], $model);
 
-			if (array_get($config, 'throttling.enabled') === false)
+			if (Arr::get($config, 'throttling.enabled') === false)
 			{
 				$throttleProvider->disable();
 			}
 
 			if (method_exists($model, 'setAttemptLimit'))
 			{
-				$attemptLimit = array_get($config, 'throttling.attempt_limit');
+				$attemptLimit = Arr::get($config, 'throttling.attempt_limit');
 
 				forward_static_call_array(
 					array($model, 'setAttemptLimit'),
@@ -223,7 +228,7 @@ class SentryServiceProvider extends ServiceProvider {
 			}
 			if (method_exists($model, 'setSuspensionTime'))
 			{
-				$suspensionTime = array_get($config, 'throttling.suspension_time');
+				$suspensionTime = Arr::get($config, 'throttling.suspension_time');
 
 				forward_static_call_array(
 					array($model, 'setSuspensionTime'),
@@ -234,7 +239,7 @@ class SentryServiceProvider extends ServiceProvider {
 			// Define the User model to use for relationships.
 			if (method_exists($model, 'setUserModel'))
 			{
-				$userModel = array_get($config, 'users.model');
+				$userModel = Arr::get($config, 'users.model');
 
 				forward_static_call_array(
 					array($model, 'setUserModel'),
